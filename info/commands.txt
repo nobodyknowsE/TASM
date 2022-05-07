@@ -1,0 +1,23 @@
+*** 1: COMPILE AND CREATE OBJECT MODULE ***
+
+tasm file.asm
+or
+tasm/z/zi file.asm
+-- The /z switch causes TASM to display the lines that generate compilation errors.
+The /zi switch enables information needed by the debugger to be included in the .OBJ file.
+
+*** 2: RUN LINKER TO GENERATE .EXE FILE FROM .OBJ FILE ***
+
+tlink file
+or
+tlink/v file (?)
+
+
+*** 3: RUN PROGRAM (.EXE FILE) ***
+
+file
+
+
+*** OPTIONAL: RUN DEBUGGER ***
+
+td file 
