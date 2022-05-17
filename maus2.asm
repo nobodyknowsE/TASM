@@ -25,7 +25,7 @@ MausProc    PROC far
             mov ax, 2       ; Cursor aus
             int 33h
             mov ah, Count
-            mov al, 0DBh
+            mov al, dx
             inc ah
             mov Count, ah
             stosw
