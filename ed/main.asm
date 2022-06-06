@@ -8,11 +8,13 @@ DispSegReg        = 0B800h
 escKey            = 1Bh
                   .data
 fileNameRead      db "str.txt", 0
-string            db ?
+string            db 2048 DUP(?)                             ; Datei max. 2048 Byte
 handler           dw ?
 
                   .code
                   INCLUDE ed\file.inc
+                  INCLUDE ed\draw.inc
+                  INCLUDE ed\write.inc
 
 Start:            mov ax, @data
                   mov ds, ax
@@ -23,28 +25,19 @@ Start:            mov ax, @data
                   mov ax, 3                                  ; Videomodus 3
                   int 10h
 
+                  call draw                                  ; Zeichenbildschirmdekor zeichnen
+
                   ;DATEI LESEN + STRING BESCHREIBEN
                   mov ax, OFFSET string
                   mov bx, OFFSET fileNameRead
 
-                  push ax
+                  push ax                                    ; Parameteruebergabe
                   push bx
-                  push bp
 
                   call Read
 
-                  pop bp
-
                   ;STRING AUF BILDSCHIRM AUSGEBEN
-                  mov si, OFFSET string
-                  mov ah, 0Ch
-                  mov di, 0
-
-write:            mov al, [si]
-                  stosw
-                  inc si
-                  dec cx                                        ; Schleifenzaehler wird in PROC Read gesetzt
-                  jnz write
+                  call writeOnDisplay
 
 EndlLoop:         xor ah, ah
                   int 16h

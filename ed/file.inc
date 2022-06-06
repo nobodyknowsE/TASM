@@ -2,7 +2,8 @@
 ;Create ENDP
 
 Read PROC NEAR
-          mov bp, sp                                    ; auf Stack liegen jetzt: fileNameWrite, fileNameRead, bp, Ruecksprungadresse
+          push bp
+          mov  bp, sp                                    ; auf Stack liegen jetzt: fileNameWrite, fileNameRead, bp, Ruecksprungadresse
 
           @@fileNameRead    equ [bp + 4]
           @@string          equ [bp + 6]
@@ -18,7 +19,7 @@ Read PROC NEAR
           ;READ
           mov ah, 3Fh
           mov bx, handler
-          mov cx, 150
+          mov cx, 2048
           mov dx, OFFSET @@string
           int 21h
 
@@ -28,6 +29,7 @@ Read PROC NEAR
           mov ah, 3Eh
           int 21h
 
+          pop bp
           ret
 
 Read ENDP
