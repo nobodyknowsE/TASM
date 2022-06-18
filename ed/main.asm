@@ -12,9 +12,9 @@ string            db 2048 DUP(?)                             ; Datei max. 2048 B
 handler           dw ?
 
                   .code
-                  INCLUDE ed\file.inc
-                  INCLUDE ed\draw.inc
-                  INCLUDE ed\write.inc
+                  INCLUDE file.inc
+                  INCLUDE draw.inc
+                  INCLUDE write.inc
 
 Start:            mov ax, @data
                   mov ds, ax
@@ -37,15 +37,17 @@ Start:            mov ax, @data
                   call Read
 
                   ;STRING AUF BILDSCHIRM AUSGEBEN
-                  call writeOnDisplay
-
+                  call writeOnDisplay	
+				  
 EndlLoop:         xor ah, ah
                   int 16h
                   cmp al, escKey
                   jz Epilog
+				  mov ah, 0Eh								; schreibt Zeichen an Cursorposition im Teletype modus
+				  int 10h
                   jmp EndlLoop
 
-Epilog:           mov ax, 3                                  ; Display loeschen
+Epilog:           mov ax, 3                                 ; Display loeschen
                   int 10h
                   mov ah, 4Ch
                   int 21h
