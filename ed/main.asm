@@ -7,7 +7,8 @@
 DispSegReg        = 0B800h
 escKey            = 1Bh
                   .data
-fileNameRead      db "str.txt", 0
+fileNameWrite     db "write.txt", 0
+fileNameRead      db "read.txt", 0
 string            db 2048 DUP(?)                             ; Datei max. 2048 Byte
 handler           dw ?
 
@@ -18,10 +19,8 @@ handler           dw ?
 
 Start:            mov ax, @data
                   mov ds, ax
-
                   mov ax, DispSegReg                         ; Display in es
                   mov es, ax
-
                   mov ax, 3                                  ; Videomodus 3
                   int 10h
 
@@ -30,11 +29,16 @@ Start:            mov ax, @data
                   ;DATEI LESEN + STRING BESCHREIBEN
                   mov ax, OFFSET string
                   mov bx, OFFSET fileNameRead
-
                   push ax                                    ; Parameteruebergabe
                   push bx
-
                   call Read
+
+                  ; STRING IN DATEI SCHREIBEN
+                  mov ax, OFFSET string
+                  mov bx, OFFSET fileNameWrite
+                  push ax
+                  push bx
+                  call Write
 
                   ;STRING AUF BILDSCHIRM AUSGEBEN
                   call writeOnDisplay

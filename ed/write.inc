@@ -1,13 +1,13 @@
 writeOnDisplay PROC NEAR
-        mov si, OFFSET string
-        mov ah, 0Fh
-        mov di, 160
+              mov si, OFFSET string
+              mov ah, 0Fh
+              mov di, 160
 
-write:  mov al, [si]
-        stosw
-        inc si
-        dec cx                                        ; Schleifenzaehler wird in PROC Read gesetzt
-        jnz write
+writeString:  mov al, [si]
+              stosw
+              inc si
+              dec cx                                        ; Schleifenzaehler wird in PROC Read gesetzt
+              jnz writeString
 
-        ret
+              ret
 writeOnDisplay ENDP
