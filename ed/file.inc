@@ -25,17 +25,17 @@ Read PROC NEAR
 
           mov cx, ax                                      ; ax = Anzahl gelesener Bytes, cx = Schleifenzaehler nach PROC
 	
-		  ;CALCULATE CURSORPOS
-		  mov bl, 80                                      ; gebraucht als Divident für nachfolgende Rechnung
-		  div bl		                                  ; ax / bl (Anzahl Bytes / Zeichen pro Zeile) = in al Quotient, in ah Rest
-		  mov dh, al                                      ; dh = Zeile
-		  inc dh	                                      ; notwendig, da 1. Zeile in unserem Editor nicht beschrieben wird
-		  mov dl, ah                                      ; dl = Spalte
+	  ;CALCULATE CURSORPOS
+	  mov bl, 80                                      ; gebraucht als Divident für nachfolgende Rechnung
+	  div bl		                          ; ax / bl (Anzahl Bytes / Zeichen pro Zeile) = in al Quotient, in ah Rest
+	  mov dh, al                                      ; dh = Zeile
+	  inc dh	                                  ; notwendig, da 1. Zeile in unserem Editor nicht beschrieben wird
+	  mov dl, ah                                      ; dl = Spalte
 		  
-		  xor ax, ax
-		  xor bx, bx
-		  mov ah, 2										  ; setzt Cursorpos
-		  int 10h                                         
+	  xor ax, ax
+	  xor bx, bx
+	  mov ah, 2					  ; setzt Cursorpos
+	  int 10h                                         
 	
           ;CLOSE
           mov ah, 3Eh
