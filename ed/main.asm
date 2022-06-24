@@ -41,15 +41,17 @@ Start:            mov ax, @data
                   call Write
 
                   ;STRING AUF BILDSCHIRM AUSGEBEN
-                  ;call writeOnDisplay
+                  call writeOnDisplay
 
 EndlLoop:         xor ah, ah
                   int 16h
                   cmp al, escKey
                   jz Epilog
+	                mov ah, 0Eh				    ; schreibt Zeichen an Cursorposition im Teletype modus
+		              int 10h
                   jmp EndlLoop
 
-Epilog:           mov ax, 3                                  ; Display loeschen
+Epilog:           mov ax, 3                                 ; Display loeschen
                   int 10h
                   mov ah, 4Ch
                   int 21h

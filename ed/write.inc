@@ -1,6 +1,6 @@
 writeOnDisplay PROC NEAR
               mov si, OFFSET string
-              mov ah, 0Fh
+              mov ah, 07h
               mov di, 160
 
 writeString:  mov al, [si]
