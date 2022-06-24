@@ -41,7 +41,7 @@ Start:            mov ax, @data
                   call Write
 
                   ;STRING AUF BILDSCHIRM AUSGEBEN
-                  call writeOnDisplay
+                  ;call writeOnDisplay
 
 EndlLoop:         xor ah, ah
                   int 16h
