@@ -41,6 +41,7 @@ Start:            mov ax, @data
                   call Write
 
                   ;STRING AUF BILDSCHIRM AUSGEBEN
+                  dec cx                                     ; Schleifenzaehler wird in Proc Read gesetzt und muss um 1 dekrementiert werden wegen Index 0
                   call writeOnDisplay
 
 EndlLoop:         xor ah, ah
