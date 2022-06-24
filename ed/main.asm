@@ -1,6 +1,4 @@
 ; Hauptprogramm des Editors
-; bisher: Programm gibt merhzeiligen Text auf Bildschirm aus
-; next step: Angabe der zu lesenden Bytes in Read Proc dynamisch machen
 
                   .model small
                   .486
@@ -9,7 +7,8 @@ escKey            = 1Bh
                   .data
 fileNameWrite     db "write.txt", 0
 fileNameRead      db "read.txt", 0
-string            db 2048 DUP(?)                             ; Datei max. 2048 Byte
+displayString     db ""
+string            db 2048 DUP(?)                 ; Datei max. 2048 Byte
 handler           dw ?
 
                   .code
@@ -19,40 +18,53 @@ handler           dw ?
 
 Start:            mov ax, @data
                   mov ds, ax
-                  mov ax, DispSegReg                         ; Display in es
+                  mov ax, DispSegReg             ; Display in es
                   mov es, ax
-                  mov ax, 3                                  ; Videomodus 3
+                  mov ax, 3                      ; Videomodus 3
                   int 10h
 
-                  call draw                                  ; Zeichenbildschirmdekor zeichnen
+                  call draw                      ; Zeichenbildschirmdekor zeichnen
+
+                  mov si, OFFSET displayString   ; si muss vor Proc Read gesetzt werden, da dort si verändert wird, um richtige Pos. in Str zu erhalten
 
                   ;DATEI LESEN + STRING BESCHREIBEN
-                  mov ax, OFFSET string
+                  mov ax, OFFSET displayString
                   mov bx, OFFSET fileNameRead
-                  push ax                                    ; Parameteruebergabe
+                  push ax                        ; Parameteruebergabe
                   push bx
                   call Read
-
-                  ; STRING IN DATEI SCHREIBEN
-                  mov ax, OFFSET string
-                  mov bx, OFFSET fileNameWrite
-                  push ax
-                  push bx
-                  call Write
+                  add sp, 4                      ; Stack bereinigen
 
                   ;STRING AUF BILDSCHIRM AUSGEBEN
-                  dec cx                                     ; Schleifenzaehler wird in Proc Read gesetzt und muss um 1 dekrementiert werden wegen Index 0
+                  dec cx                         ; Schleifenzaehler wird in Proc Read gesetzt und muss um 1 dekrementiert werden wegen Index 0
                   call writeOnDisplay
+
+                  mov cx, bx                     ; Counter fuer in Datei zu schreibende Bytes
+                  dec cx                         ; Schleifenzaehler wird in Proc Read gesetzt und muss um 1 dekrementiert werden wegen Index 0
 
 EndlLoop:         xor ah, ah
                   int 16h
                   cmp al, escKey
                   jz Epilog
-	                mov ah, 0Eh				    ; schreibt Zeichen an Cursorposition im Teletype modus
+
+	                mov ah, 0Eh				             ; schreibt Zeichen an Cursorposition im Teletype modus
 		              int 10h
+
+                  ; CHAR VON BILDSCHIRM IN displayString SPEICHERN
+                  mov [si], al
+                  inc si
+                  inc cx
+
                   jmp EndlLoop
 
-Epilog:           mov ax, 3                                 ; Display loeschen
+Epilog:           ; BEI ABBRUCH DES PROGRAMMS STRING VON BILDSCHIRM IN DATEI SCHREIBEN
+                  mov ax, OFFSET displayString
+                  mov bx, OFFSET fileNameWrite
+                  push ax
+                  push bx
+                  call Write
+
+                  mov ax, 3                       ; Display loeschen
                   int 10h
                   mov ah, 4Ch
                   int 21h
