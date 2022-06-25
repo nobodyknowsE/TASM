@@ -7,8 +7,7 @@ escKey            = 1Bh
                   .data
 fileNameWrite     db "write.txt", 0
 fileNameRead      db "read.txt", 0
-displayString     db ""
-string            db 2048 DUP(?)                 ; Datei max. 2048 Byte
+displayString     db 2048 DUP(?)
 handler           dw ?
 
                   .code
@@ -47,6 +46,9 @@ EndlLoop:         xor ah, ah
                   cmp al, escKey
                   jz Epilog
 
+                  cmp al, 08h                    ; Hexwert für Backspace
+                  jz deleteChar
+
 	                mov ah, 0Eh				             ; schreibt Zeichen an Cursorposition im Teletype modus
 		              int 10h
 
@@ -54,6 +56,32 @@ EndlLoop:         xor ah, ah
                   mov [si], al
                   inc si
                   inc cx
+
+                  jmp EndlLoop
+
+deleteChar:       ; CURSORPOS LESEN
+                  mov ah, 3
+                  int 10h
+                  ; CURSORPOS UM 1 VERMINDERN
+                  dec dl
+                  ; CURSOR NEU SETZEN
+                  mov ah, 2
+                  int 10h
+                  ; LEERZEICHEN SCHREIBEN
+                  mov ax, 0F20h
+                  mov ah, 0Eh
+                  int 10h
+                  ; CURSORPOS LESEN
+                  mov ah, 3
+                  int 10h
+                  ; CURSORPOS UM 1 VERMINDERN
+                  dec dl
+                  ; CURSOR NEU SETZEN
+                  mov ah, 2
+                  int 10h
+
+                  ;3. POSITION IN  STRING VERRINGERN
+                  ;4. LEERZEICHEN SCHREIBEN
 
                   jmp EndlLoop
 
