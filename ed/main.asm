@@ -14,6 +14,7 @@ handler           dw ?
                   INCLUDE ed\file.inc
                   INCLUDE ed\draw.inc
                   INCLUDE ed\write.inc
+                  INCLUDE ed\delete.inc
 
 Start:            mov ax, @data
                   mov ds, ax
@@ -43,6 +44,7 @@ Start:            mov ax, @data
 
 EndlLoop:         xor ah, ah
                   int 16h
+
                   cmp al, escKey
                   jz Epilog
 
@@ -59,30 +61,7 @@ EndlLoop:         xor ah, ah
 
                   jmp EndlLoop
 
-deleteChar:       ; CURSORPOS LESEN
-                  mov ah, 3
-                  int 10h
-                  ; CURSORPOS UM 1 VERMINDERN
-                  dec dl
-                  ; CURSOR NEU SETZEN
-                  mov ah, 2
-                  int 10h
-                  ; LEERZEICHEN SCHREIBEN
-                  mov ax, 0F20h
-                  mov ah, 0Eh
-                  int 10h
-                  ; CURSORPOS LESEN
-                  mov ah, 3
-                  int 10h
-                  ; CURSORPOS UM 1 VERMINDERN
-                  dec dl
-                  ; CURSOR NEU SETZEN
-                  mov ah, 2
-                  int 10h
-
-                  ;3. POSITION IN  STRING VERRINGERN
-                  ;4. LEERZEICHEN SCHREIBEN
-
+deleteChar:       call delete
                   jmp EndlLoop
 
 Epilog:           ; BEI ABBRUCH DES PROGRAMMS STRING VON BILDSCHIRM IN DATEI SCHREIBEN

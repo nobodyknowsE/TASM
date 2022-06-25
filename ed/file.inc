@@ -37,6 +37,7 @@ Read PROC NEAR
       	  xor ax, ax
       	  xor bx, bx
       	  mov ah, 2					                   ; setzt Cursorpos
+          dec dl                               ; sonst ist Cursor 1 Pos. zu weit (nicht synchron mit displayString)
       	  int 10h
 
           ;CLOSE
